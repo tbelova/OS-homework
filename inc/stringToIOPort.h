@@ -1,9 +1,11 @@
 #ifndef __STRINGTOIOPORT__
-	#define __STRINGTOIOPORT__
 
-		#include <ioport.h>
+#define __STRINGTOIOPORT__
 
-		void initialize_io_port();
-		void string_to_io_port(char* s);
+#include <ioport.h>
+
+void initialize_io_port();
+int string_to_io_port(const char* s);
+void put(char c);
 
 #endif

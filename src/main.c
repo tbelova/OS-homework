@@ -16,6 +16,9 @@ static void qemu_gdb_hang(void)
 #endif
 }
 
+#include "print.h"
+
+
 void main(void)
 {
 	qemu_gdb_hang();
@@ -28,6 +31,12 @@ void main(void)
 	__asm__ ("int $0");
 
 	initialize_interrupt_controller();
+
+	printf("%d:  %c, %s, %%, %i\nlalala %lld\n", 5, 'a', "abcde", -1, INT64_MIN);   //printf test
+	
+	char t[100];
+	snprintf(t, 100, "%d:  %c, %s, %%, %i\nlalala %lld\n", 5, 'a', "abcde", -1, INT64_MIN);   //snprintf test
+	printf("%s", t);
 
 	initialize_PIT();
 

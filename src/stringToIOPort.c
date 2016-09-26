@@ -23,9 +23,12 @@ void put(char c) {
 	out8(START, c);
 }
 
-void string_to_io_port(char* s) {
+int string_to_io_port(const char* s) {
+	int res = 0;
 	for (int i = 0; s[i] != 0; i++) {
 		put(s[i]);
+		res++;
 	}	
+	return res;
 }
 
