@@ -15,6 +15,9 @@ void put_to_string(char c) {
 
 int printULL(unsigned long long a, int base, void (*put)(char)) {
 	int length = 0;
+	if (a == 0) {
+		number[length++] = '0';
+	}
 	while (a > 0) {
 		int c = a % base;
 		if (c < 10) {
