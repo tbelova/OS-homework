@@ -4,30 +4,31 @@
 	.global interruptHandler
 
 commonInterruptHandler:
+	pushq %rdi
+	movq 8(%rsp), %rdi
+
 	pushq %rax
 	pushq %rcx
 	pushq %rdx
 	pushq %rsi
-	pushq %rdi
 	pushq %r8
 	pushq %r9
 	pushq %r10
 	pushq %r11
-	
-	movq 72(%rsp), %rdi
-	
+
+	cld
 	call interruptHandler
-	
+
 	popq %r11
 	popq %r10
 	popq %r9
 	popq %r8
-	popq %rdi
 	popq %rsi
 	popq %rdx
 	popq %rcx
 	popq %rax
-	
+	popq %rdi	
+
 	addq $16, %rsp
 	
 	iretq
