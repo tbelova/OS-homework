@@ -53,7 +53,14 @@ idt_ptr:
 	.space 0x100
 stack_top:
 
+	.global multiboot_info
+
+multiboot_info:
+	.long 0
+
 1:
+	movl %ebx, multiboot_info	
+
 	movl $stack_top, %esp
 	pushl %eax
 	call videomem_clrscr
@@ -135,6 +142,7 @@ setup_mapping:
 	movl $(bootstrap_pml4 - VIRTUAL_BASE), %edi
 	movl $(bootstrap_pml3 - VIRTUAL_BASE + PTE_PRESENT + PTE_WRITE), %eax
 	movl %eax, (%edi)
+	movl %eax, 2048(%edi)
 	movl %eax, 4088(%edi)
 
 	movl %cr4, %eax

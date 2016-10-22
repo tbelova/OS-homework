@@ -6,6 +6,8 @@
 #include <interruptController.h>
 #include <interrupt_lock.h>
 #include <PIT.h>
+#include <memmap.h>
+
 
 static void qemu_gdb_hang(void)
 {
@@ -16,29 +18,26 @@ static void qemu_gdb_hang(void)
 #endif
 }
 
+void init() {
+	initialize_io_port();
+	initialize_IDT();
+	initialize_interrupt_controller();
+	initialize_memory_map();
+}
+
 #include "print.h"
 
 void main(void)
 {
 	qemu_gdb_hang();
 
-	initialize_io_port();
-	char* s = "Hello, world!\n";
-	string_to_io_port(s);	
+	init();
 
-	initialize_IDT();
-	__asm__ ("int $0");
+	print_memory_map();
 
-	initialize_interrupt_controller();
+/*  __asm__ ("int $0");
 
-	printf("%d:  %c, %s, %%, %i\nlalala %lld\n", 5, 'a', "abcde", -1, INT64_MIN);   //printf test
-	
-	char t[100];
-	snprintf(t, 100, "%d:  %c, %s, %%, %i\nlalala %lld\n", 5, 'a', "abcde", -1, INT64_MIN);   //snprintf test
-	printf("%s", t);
-	
-
-	initialize_PIT();
+	initialize_PIT();*/
 
 
 	while (1);
