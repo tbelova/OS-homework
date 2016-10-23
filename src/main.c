@@ -54,16 +54,20 @@ void test_slab() {
 		int* b = slab_alloc(slab);
 		for (int k = 0; k < 10; ++k) {
 			a[k] = k;
-			b[k] = 0;
+			b[k] = -k;
 		}
 		for (int k = 0; k < 10; ++k) {
-			printf("(a[%d] = %lld, b[%d] = %lld) ", k, a[k], k, b[k]);
+			printf("(a[%d] = %d, b[%d] = %d) ", k, a[k], k, b[k]);
 		}
 		printf("\n\n");
 		
 		slab_free(slab, a);
 		slab_free(slab, b);
 	}
+
+	destroy_slab(slab);
+
+	printf("success\n");
 
 }
 

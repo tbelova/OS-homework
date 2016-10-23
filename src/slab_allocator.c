@@ -1,6 +1,7 @@
 #include <slab_allocator.h>
 
 void slab_init(slab_t* slab, uint64_t* memory, uint64_t block_size, uint64_t max_cnt) {
+	slab->memory = memory;
 	slab->head = memory;
 	for (uint64_t i = 0; i < max_cnt - 1; ++i) {
 		(memory)[i] = (uint64_t)memory + block_size;
@@ -35,6 +36,10 @@ void slab_free(slab_t* slab, void* void_ptr) {
 
 	*ptr = (uint64_t)slab->head;
 	slab->head = ptr; 
+}
+
+void destroy_slab(slab_t* slab) {
+	buddy_free(slab->memory);
 }
 
 
