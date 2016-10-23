@@ -17,6 +17,10 @@ buddy_node_t * descriptors;
 
 uint64_t descriptors_size = 0;
 
+uint64_t logical_addr(uint64_t addr) {
+	return addr + 0xffff800000000000ull;
+}
+
 void add_buddy_tree(uint64_t size) {
 	for (int k = MAX_CNT_LISTS; k >= 0; --k) {
 		if (size & (1ull << k)) {
@@ -60,10 +64,10 @@ void initialize_buddy_allocator() {
 		printf("Not enough memory.\n");
 	}
 
-	first_page = (max_block->begin + PAGE_SIZE - 1) / PAGE_SIZE * PAGE_SIZE;
+	first_page = logical_addr((max_block->begin + PAGE_SIZE - 1) / PAGE_SIZE * PAGE_SIZE);
 	uint64_t number_of_blocks = (max_block->end - first_page + 1 - wanted_memory) / PAGE_SIZE;
 
-	descriptors = (buddy_node_t*)(first_page + number_of_blocks * PAGE_SIZE);
+	descriptors = (buddy_node_t*)(logical_addr(first_page + number_of_blocks * PAGE_SIZE));
 
 	add_buddy_tree(number_of_blocks);
 
