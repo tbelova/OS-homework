@@ -99,7 +99,7 @@ buddy_node_t* find_descriptor(uint8_t cur_ord, uint8_t wanted_ord) {
 	return find_descriptor(cur_ord - 1, wanted_ord);
 }
 
-uint64_t buddy_alloc(uint64_t size) {
+void* buddy_alloc(uint64_t size) {
 	if (size > (1ull << MAX_CNT_LISTS)) return 0;
 
 	uint8_t k = 0;
@@ -113,7 +113,7 @@ uint64_t buddy_alloc(uint64_t size) {
 	buddy_node_t* descriptor = find_descriptor(l, k);
 	descriptor->free = 0;
 	
-	return first_page + (descriptor - descriptors) * PAGE_SIZE;
+	return (void*)(first_page + (descriptor - descriptors) * PAGE_SIZE);
 
 }
 
@@ -140,7 +140,8 @@ void erase(buddy_node_t* node, int k) {
 	node->right = NULL;
 }
 
-void buddy_free(uint64_t ptr) {
+void buddy_free(void* void_ptr) {
+	uint64_t ptr = (uint64_t)void_ptr;
 	buddy_node_t* descriptor = descriptors + (ptr - first_page) / PAGE_SIZE;
 
 	descriptor->free = 1;

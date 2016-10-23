@@ -5,8 +5,8 @@
 #include <memmap.h>
 
 void initialize_buddy_allocator();
-uint64_t buddy_alloc(uint64_t);
-void buddy_free(uint64_t);
+void* buddy_alloc(uint64_t);
+void buddy_free(void*);
 
 #endif
 

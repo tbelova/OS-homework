@@ -8,8 +8,9 @@
 #include <PIT.h>
 #include <memmap.h>
 #include <buddy_allocator.h>
+#include <slab_allocator.h>
 
-#include "print.h"
+#include <print.h>
 
 static void qemu_gdb_hang(void)
 {
@@ -39,9 +40,30 @@ void test_buddy() {
 	}
 	printf("\n");
 
-	buddy_free((uint64_t)array);
+	buddy_free(array);
 
 	printf("success!\n");
+
+}
+
+void test_slab() {
+	slab_t* slab = create_slab(sizeof(int) * 10, 2);
+	
+	for (int i = 0; i < 5; ++i) {
+		int* a = slab_alloc(slab);
+		int* b = slab_alloc(slab);
+		for (int k = 0; k < 10; ++k) {
+			a[k] = k;
+			b[k] = 0;
+		}
+		for (int k = 0; k < 10; ++k) {
+			printf("(a[%d] = %lld, b[%d] = %lld) ", k, a[k], k, b[k]);
+		}
+		printf("\n\n");
+		
+		slab_free(slab, a);
+		slab_free(slab, b);
+	}
 
 }
 
@@ -51,9 +73,10 @@ void main(void)
 
 	init();
 
-	print_memory_map();
-	
-	test_buddy();
+	print_memory_map();	
+	//test_buddy();
+	//test_slab();
+
  
 	
 
