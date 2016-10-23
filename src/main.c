@@ -7,7 +7,9 @@
 #include <interrupt_lock.h>
 #include <PIT.h>
 #include <memmap.h>
+#include <buddy_allocator.h>
 
+#include "print.h"
 
 static void qemu_gdb_hang(void)
 {
@@ -23,9 +25,25 @@ void init() {
 	initialize_IDT();
 	initialize_interrupt_controller();
 	initialize_memory_map();
+	initialize_buddy_allocator();
 }
 
-#include "print.h"
+void test_buddy() {
+	int n = 20;
+	int * array = (int*)buddy_alloc(n);
+	for (int i = 0; i < n; ++i) {
+		array[i] = i;
+	}
+	for (int i = 0; i < n; ++i) {
+		printf("%d ", array[i]);
+	}
+	printf("\n");
+
+	buddy_free((uint64_t)array);
+
+	printf("success!\n");
+
+}
 
 void main(void)
 {
@@ -34,6 +52,10 @@ void main(void)
 	init();
 
 	print_memory_map();
+	
+	test_buddy();
+ 
+	
 
 /*  __asm__ ("int $0");
 

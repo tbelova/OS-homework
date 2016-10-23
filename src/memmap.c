@@ -2,14 +2,14 @@
 
 #define MEMMAP_MAX_SIZE 100	
 
-struct my_mem_entry memory_map[MEMMAP_MAX_SIZE];
+my_mem_entry_t memory_map[MEMMAP_MAX_SIZE];
 uint64_t memory_map_size = 0;
 
 extern uint8_t text_phys_begin[];
 extern uint8_t bss_phys_end[];
 
 void add_my_entry(uint64_t base_addr, uint64_t length, uint32_t type) {
-	struct my_mem_entry* entry = memory_map + memory_map_size;
+	my_mem_entry_t* entry = memory_map + memory_map_size;
 	memory_map_size++;
 
 	entry->begin  = base_addr;
@@ -24,7 +24,7 @@ void initialize_memory_map() {
 
 	uint64_t multiboot_info64 = (uint64_t)multiboot_info;
 
-	struct my_mem_entry* kernel_my_entry = memory_map + memory_map_size;
+	my_mem_entry_t* kernel_my_entry = memory_map + memory_map_size;
 	memory_map_size++;
 
 	kernel_my_entry->begin  = (uint64_t)text_phys_begin;
@@ -36,7 +36,7 @@ void initialize_memory_map() {
  	uint64_t memmap_base_addr = (uint64_t)(*(uint64_t*)(multiboot_info64 + 48));
 	
 	for (uint64_t memmap_ptr = memmap_base_addr; memmap_ptr < memmap_base_addr + memmap_length; ) {
-		struct mem_entry* entry = (struct mem_entry*)memmap_ptr;
+		mem_entry_t* entry = (mem_entry_t*)memmap_ptr;
 		memmap_ptr += entry->size + sizeof(entry->size);
 
 		uint64_t left  = entry->base_addr;
@@ -56,16 +56,24 @@ void initialize_memory_map() {
 	}
 }
 
-void print(struct my_mem_entry entry, uint64_t num) {
+void print(my_mem_entry_t entry, uint64_t num) {
 	printf("memory entry #%lli: 0x%llx-0x%llx(%lli bytes), type = %d\n", 
 		num, entry.begin, entry.end, entry.length, entry.type);
+}
+
+uint8_t correct(my_mem_entry_t entry) {
+	if (entry.begin <= entry.end) return 1;
+	return 0;
 }
 
 void print_memory_map() {
 	printf("_________Memory map_________ \n");
 
+	int num = 0;
 	for (uint64_t i = 0; i < memory_map_size; i++) {
-		print(memory_map[i], i);
+		if (correct(memory_map[i])) {
+			print(memory_map[i], num++);
+		}
 	}
 }
 
