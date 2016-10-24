@@ -1,4 +1,5 @@
 #include <interruptController.h>
+#include <ints.h>
 
 void initialize_interrupt_controller() {
 	uint8_t IC4 = 1;
@@ -20,6 +21,7 @@ void initialize_interrupt_controller() {
 	out8(SLAVE_DATA_PORT, (1 << 0));
 
 	lock_all();
+	enable_ints();
 }
 
 		

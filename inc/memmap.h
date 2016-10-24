@@ -17,7 +17,7 @@ struct my_mem_entry {
 	uint64_t end;
 	uint64_t length;
 	uint32_t type;
-};
+}__attribute__((packed));
 
 typedef struct my_mem_entry my_mem_entry_t;
 typedef struct mem_entry mem_entry_t;

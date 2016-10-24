@@ -16,8 +16,6 @@ void initialize_descriptor(struct IDT* idt, uint64_t offset, uint16_t segment_se
 }
 
 void initialize_IDT() {
-	disable_ints();
-
 	struct desc_table_ptr IDT_ptr;
 	IDT_ptr.size = sizeof(idt) - 1; 
 	IDT_ptr.addr = (uint64_t)idt;
@@ -28,14 +26,11 @@ void initialize_IDT() {
 		uint16_t segment_selector = KERNEL_CS;
 		uint16_t p = 1;
 		uint16_t DPL = 0;
-//		if (i >= 32) DPL = 3;
 		uint16_t TYPE = 14;				
 		uint16_t IST = 0;
 
 		initialize_descriptor(idt + i, offset, segment_selector, p, DPL, TYPE, IST);
 	}
-
-	enable_ints();
 
 }
 
