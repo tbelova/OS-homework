@@ -9,6 +9,7 @@
 #include <memmap.h>
 #include <buddy_allocator.h>
 #include <slab_allocator.h>
+#include <malloc.h>
 
 #include <print.h>
 
@@ -29,16 +30,19 @@ void init() {
 	initialize_buddy_allocator();
 }
 
-void test_buddy() {
-	int n = 20;
-	int * array = (int*)buddy_alloc(n);
+void test_buddy(int n) {
+	int * array = (int*)buddy_alloc(sizeof(int) * n);
+	if (array == 0) {
+		printf("Not enough memory\n");
+		return;
+	}
 	for (int i = 0; i < n; ++i) {
 		array[i] = i;
 	}
-	for (int i = 0; i < n; ++i) {
-		printf("%d ", array[i]);
-	}
-	printf("\n");
+	//for (int i = 0; i < n; ++i) {
+	//	printf("%d ", array[i]);
+	//}
+	//printf("\n");
 
 	buddy_free(array);
 
@@ -71,6 +75,27 @@ void test_slab() {
 
 }
 
+void test_malloc(int n) {
+	int* a = malloc(sizeof(int) * n);
+	if (a == 0) {
+		printf("Not enough memory\n");
+		return;
+	}
+	for (int i = 0; i < n; ++i) {
+		a[i] = i;
+	}
+	long long sum = 0;
+	for (int i = 0; i < n; ++i) {
+		sum += a[i];
+	}
+	free(a);
+	if (sum == (long long)n * (n - 1) / 2) {
+		printf("success\n");
+	} else {
+		printf("fail\n");
+	}
+}
+
 void main(void)
 {
 	qemu_gdb_hang();
@@ -78,11 +103,10 @@ void main(void)
 	init();
 
 	print_memory_map();	
-	//test_buddy();
-	//test_slab();
-
- 
-	
+//	test_buddy(5000);
+//	test_slab();
+	test_malloc(15);
+	test_malloc(1000000);	
 
 /*  __asm__ ("int $0");
 
